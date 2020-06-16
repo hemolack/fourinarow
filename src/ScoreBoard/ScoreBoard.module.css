@@ -1,0 +1,36 @@
+button.NewGame {
+    border: solid green 1px;
+    color: green;
+    background-color: lightgreen;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+}
+
+@keyframes yellowColorPalette {
+    0% { color: red; }
+    100% { color: black; }
+}
+
+@keyframes redColorPalette {
+    0% { color: yellow; }
+    100% { color: black; }
+}
+
+h2.Player1 {
+    /* animation-name: yellowColorPalette;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate; */
+    -webkit-text-stroke: 1px;
+    -webkit-text-fill-color: yellow;
+}
+
+h2.Player2 {
+    /* animation-name: redColorPalette;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate; */
+    -webkit-text-stroke: 1px;
+    -webkit-text-fill-color: red;
+}
