@@ -3,6 +3,8 @@ import Board from './Board/Board';
 import ScoreBoard from './ScoreBoard/ScoreBoard';
 import './App.css';
 import WinLogic from './WinLogic';
+import AISpinner from './AI/AISpinner';
+import { AI, EasyAI } from './AI/AI';
 
 class App extends Component {
   winLogic = new WinLogic();
@@ -18,10 +20,13 @@ class App extends Component {
       [0, 0, 0, 0, 0, 0]
     ],
     turn: 1,
-    winner: 0
+    winner: 0,
+    ai: AI.getInstance(AI.EASY),
+    thinking: false
   }
 
   dropTokenHandler = (colIndex) => {
+    console.info(`${this.state.turn}'s turn`);
     if(this.state.winner > 0) {
       return;
     }
@@ -29,14 +34,32 @@ class App extends Component {
     for(let i = localBoard[colIndex].length; i >= 0; --i) {
       if(localBoard[colIndex][i] === 0) { 
         localBoard[colIndex][i] = this.state.turn;
-        this.setState({ turn: (this.state.turn % 2) + 1 });
         break;
       }
     }
-    this.setState({ board: localBoard });
     if(this.detectWinCondition()) {
       this.setState({ winner: this.state.turn });
+      return;
     }
+    this.setState({ board: localBoard, turn: (this.state.turn % 2) + 1 }, () => {
+      if(this.state.ai !== null && this.state.turn === 2) {
+        this.setState({ thinking: true });
+        window.setTimeout(this.computerTurn, 1000) 
+      }
+    });
+  }
+
+  computerTurn = () => {
+    console.info('taking computer turn ' + Math.random());
+    if(this.state.ai != null) {
+      let aiColumn = this.state.ai.getMove(this.state.board);
+      this.setState({ thinking: false });
+      this.dropTokenHandler(aiColumn);
+    }
+  }
+
+  changeAIHandler = (event) => {
+    console.info(event.target.value);
   }
 
   detectWinCondition = () => {
@@ -82,7 +105,9 @@ class App extends Component {
     return (
       <div className="App">
         <h1>Four-in-a-Row</h1>
-        <Board turn={this.state.turn} state={this.state.board} dropped={this.dropTokenHandler}></Board>
+        <Board turn={this.state.turn} state={this.state.board} dropped={this.dropTokenHandler}>
+          <AISpinner thinking={this.state.thinking}></AISpinner>
+        </Board>
         <ScoreBoard winner={this.state.winner} turn={this.state.turn} resetGame={this.resetGame}/>
       </div>
     );

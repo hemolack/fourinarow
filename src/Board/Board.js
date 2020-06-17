@@ -30,8 +30,9 @@ const Board = (props) => {
         return(<div key={`column${colIndex}`} className={columnClass}>{rows}</div>)
     });
 
-    return (<div id="board">
-        {columns}
+    return (<div className={css.GameBoard} id="board">
+        { columns }
+        {props.children}
     </div>)
 };
 
